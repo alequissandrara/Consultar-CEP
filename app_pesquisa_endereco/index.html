@@ -1,0 +1,77 @@
+<html lang="pt-br">
+	<head>
+		<meta charset="utf-8">
+		<title>Consultar CEP</title>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+		<link href="estilo.css" rel="stylesheet" >
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" />
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Monoton&display=swap" rel="stylesheet">
+	</head>
+	<body>
+		<div class="painel">
+			<div class="painel-esquerdo">
+			  <h2 class="title">Consultar CEP</h2>
+			  <form class="" method="post">
+				<input type="text" id="cep" class="form-control" placeholder="CEP" />
+				<button type="button" id="pesquisar" value="pesquisar" class="form-control botao-consultar">PESQUISAR</button>
+			</form>
+			</div>
+		
+			<div class="painel-direito">
+			  <img id="fundo"  src="img/fundo.jpg"></img>
+			  <div class="resultados">
+				<div class="col-xxl-8">
+				  <input type="text" class="form-control" placeholder="ENDEREÇO" id="endereco" readonly />
+				</div>
+				<div class="col-xxl">
+				  <input type="text" class="form-control" placeholder="BAIRRO" id="bairro" readonly />
+				</div>
+				<div class="col-xxl">
+				  <input type="text" class="form-control" placeholder="CIDADE" id="cidade" readonly />
+				</div>
+				<div class="col-xxl">
+				  <input type="text" class="form-control" placeholder="UF" id="uf" readonly />
+				</div>
+			  </div>
+			</div>
+		  </div>
+		  
+	</body>
+	<script>
+		var pesquisar = document.getElementById("pesquisar");
+		var cep = document.getElementById("cep");
+		//Site da API de CEP: https://viacep.com.br/
+		pesquisar.addEventListener("click", function (evento) {
+		  evento.preventDefault(); // Evita que o formulário seja submetido
+	
+		  var userCep = cep.value || 0;
+	
+		  var cepRegex = /^[0-9]{5}-?[0-9]{3}$/; // Expressão regular para validar o CEP
+		  if (!cepRegex.test(userCep)) {
+			alert("CEP inválido");
+			return;
+		  }
+	
+		  let url = "https://viacep.com.br/ws/" + userCep + "/json/";
+		  let xmlHttp = new XMLHttpRequest();
+		  xmlHttp.open("GET", url);
+	
+		  xmlHttp.onreadystatechange = () => {
+			if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+			  let dadosJSONText = xmlHttp.responseText;
+			  let dadosJSONObj = JSON.parse(dadosJSONText);
+	
+			  document.getElementById("endereco").value = dadosJSONObj.logradouro;
+			  document.getElementById("bairro").value = dadosJSONObj.bairro;
+			  document.getElementById("cidade").value = dadosJSONObj.localidade;
+			  document.getElementById("uf").value = dadosJSONObj.uf;
+			}
+		  };
+	
+		  xmlHttp.send();
+		});
+
+	</script>
+</html>
